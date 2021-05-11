@@ -28,3 +28,20 @@ Please recreate the K8s cluster in you need to upgrade / downgrade the K8s clust
 :~/labs/k8s$./kubernetes_cluster.sh create
 
 ```
+# How to login into the server 
+```
+:~/labs/k8s$ lxc shell control-plane
+root@control-plane:~# kubectl get nodes
+NAME            STATUS   ROLES    AGE   VERSION
+control-plane   Ready    master   42m   v1.19.10
+node01          Ready    <none>   41m   v1.19.10
+root@control-plane:~# kubectl get pods
+NAME                     READY   STATUS    RESTARTS   AGE
+nginx-6799fc88d8-sjpwl   1/1     Running   0          9m19s
+root@control-plane:~# 
+
+```
+```
+:~/labs/k8s$ lxc shell node01
+root@node01:~# 
+```
