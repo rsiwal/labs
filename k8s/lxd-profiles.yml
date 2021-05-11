@@ -1,0 +1,14 @@
+profiles:
+- config: {}
+  description: ""
+  devices:
+    eth0:
+      name: eth0
+      network: ${LAB_NAME}
+      type: nic
+    root:
+      path: /
+      pool: ${LAB_NAME}
+      type: disk
+  name: ${LAB_NAME}
+

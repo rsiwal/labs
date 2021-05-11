@@ -1,0 +1,7 @@
+storage_pools:
+- config:
+    size: 30GB
+  description: ""
+  name: ${LAB_NAME}
+  driver: btrfs
+
