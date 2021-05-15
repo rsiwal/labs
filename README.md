@@ -1,2 +1,2 @@
 # labs
-The Lab environments
+Some Lab environments to play around
