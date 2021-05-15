@@ -1,0 +1,4 @@
+DOCKER_REPO="rsiwal"
+VERSION="0.1"
+APP_PORT=8080
+
