@@ -82,4 +82,4 @@ affinity: {}
 
 env:
   - name: COLOR
-    value: green
+    value: purple
