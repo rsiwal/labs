@@ -37,8 +37,10 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: ClusterIP
+  type: NodePort
   port: 80
+  targetPort: 8080
+  name: simple-svc
 
 ingress:
   enabled: false
@@ -77,3 +79,7 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+env:
+  - name: COLOR
+    value: green
