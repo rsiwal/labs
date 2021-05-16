@@ -9,18 +9,27 @@ UBUNTU_CODENAME="focal"
 # Container name for Control Plane
 CONTROL_PLANE_NAME="control-plane"
 NODE_NAMES=${CONTROL_PLANE_NAME}
-NUMBER_OF_WORKER_NODES=1
+NUMBER_OF_WORKER_NODES=2
 
 # Version of Kubernetes to be installed
-K8S_VERSION=1.18.18
+K8S_VERSION=1.21.1
 KUBELET_VERSION="${K8S_VERSION}-00"
 KUBEADM_VERSION="${K8S_VERSION}-00"
 KUBECTL_VERSION="${K8S_VERSION}-00"
 POD_NETWORK_CIDR="10.244.0.0/16"
 
+# NFS and Persistent Volumes setup
+SETUP_NFS_SERVER_ON_LOCAL_MACHINE=yes
+PV_SIZE=1Gi
+PV_COUNT=5
+
+# Helm
+HELM_VERSION=v3.5.4
+
 # Some beautification of console messages
 RED=`tput setaf 1`
 GREEN=`tput setaf 2`
+YELLOW=`tput setaf 3`
 RESET=`tput sgr0`
 
 for node_id in `seq -f %02g 1 $NUMBER_OF_WORKER_NODES`
@@ -28,7 +37,7 @@ do
   NODE_NAMES="${NODE_NAMES} node$node_id"
 done
 
-[ $# -ne 1 ] && echo "USAGE: $0 create|destroy" && exit 1
+[ $# -ne 1 ] && echo "USAGE: $0 create|destroy|info" && exit 1
 case $1 in 
   create)
     echo -e "${GREEN}Installing LXD and helper packages ${RESET}"
@@ -88,6 +97,13 @@ case $1 in
         apt-get -y install linux-image-$(uname -r)
         systemctl enable docker
         systemctl enable kubelet
+        # Install cloud-guest-utils to manage disk and fill the root partition to the maximum available disk volume
+        sudo apt -y install cloud-guest-utils
+        # Install nfc common (Required if you are using NFS as PV)
+        sudo apt -y install nfs-common
+        sudo apt install jq
+        growpart /dev/sda 2
+        resize2fs /dev/sda2
 EOF
     done
 
@@ -103,6 +119,7 @@ EOF
       cp -vf /etc/kubernetes/admin.conf ~/.kube/config
       chmod 600 ~/.kube/config
       kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+      curl -LO https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz && tar zxvf helm-${HELM_VERSION}-linux-amd64.tar.gz linux-amd64/helm && mv linux-amd64/helm /usr/local/bin/ 
 EOF
     fi
 
@@ -130,6 +147,55 @@ EOF
     echo "${GREEN}Status of nodes${RESET}"
     lxc exec ${CONTROL_PLANE_NAME} -- kubectl get nodes
 
+    if [ $SETUP_NFS_SERVER_ON_LOCAL_MACHINE == "yes" ]
+    then
+      echo "${GREEN}Setting up NFS Server. We will be needing it as a PV${RESET}"
+      sudo apt -y install nfs-kernel-server && sudo systemctl enable nfs-kernel-server && sudo systemctl restart nfs-kernel-server
+      sudo mkdir -p /opt/labs/
+      sudo chmod 777 /opt/labs/
+      grep -sq ^/opt/labs /etc/exports || echo "/opt/labs *(rw,sync,no_subtree_check,no_root_squash)" | sudo tee -a /etc/exports
+      sudo exportfs -r
+    fi
+
+    echo "${GREEN}Setting up some Persistent Volumes${RESET}"
+    TEMP_PV_FILE=`tempfile`.yml
+    for index in `seq 1 $PV_COUNT`
+    do
+      cat >> $TEMP_PV_FILE <<EOF
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-labs-${index}
+spec:
+  capacity:
+    storage: ${PV_SIZE}
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: ""
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+  nfs:
+    path: /opt/labs
+    server: $(ip a show dev `ip r |grep default|awk '{print $5}'`|grep "inet "|awk '{print $2}'|cut -d/ -f1)
+
+EOF
+    done
+    lxc file push $TEMP_PV_FILE ${CONTROL_PLANE_NAME}/tmp/pv.yml
+    lxc exec ${CONTROL_PLANE_NAME} -- sh -c "kubectl apply -f /tmp/pv.yml"
+    rm -vf ${TEMP_PV_FILE}
+    
+  echo "${GREEN}Installing Argo CD${RESET}"  
+  lxc exec ${CONTROL_PLANE_NAME} -- sh -c "kubectl create namespace argocd; kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
+
+  echo "${GREEN}Installing Argo CD CLI in ${CONTROL_PLANE_NAME}${RESET}"
+  lxc exec ${CONTROL_PLANE_NAME} -- sh -c "curl -LO https://github.com/argoproj/argo-cd/releases/download/v2.0.1/argocd-util-linux-amd64 && chmod +x argocd-util-linux-amd64 && mv argocd-util-linux-amd64 /usr/local/bin/argocd"
+
+  echo "${YELLOW}Agro CD Username: admin${RESET}"
+  echo "${YELLOW}Agro CD Password: `lxc exec ${CONTROL_PLANE_NAME} -- sh -c "kubectl -n argocd get secret argocd-initial-admin-secret -o json|jq -r .data.password |base64 -d"`${RESET}"
   ;;
   destroy)
     echo "${RED}Deleting VMs${RESET}"
@@ -147,6 +213,13 @@ EOF
 
     echo "${RED}Deleting storage${RESET}"
     lxc storage list |grep -qw ${LAB_NAME} && lxc storage delete ${LAB_NAME}
+  ;;
+  info)
+  echo "Agro CD Default Username: admin"
+  echo "Agro CD Default Password: `lxc exec ${CONTROL_PLANE_NAME} -- sh -c "kubectl -n argocd get secret argocd-initial-admin-secret -o json|jq -r .data.password |base64 -d"`"
+  echo "IP Addresses :"
+  lxc list --format=json |jq -r '["VM Name", "IPv4_Address", "IPv6_Address"] ,(.[] | [ .name, .state.network.enp5s0.addresses[].address])|@tsv'
+
   ;;
   *)
     echo "Unknown action $1 . USAGE: $0 create|destroy"
