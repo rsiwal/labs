@@ -21,7 +21,7 @@ POD_NETWORK_CIDR="10.244.0.0/16"
 # NFS and Persistent Volumes setup
 SETUP_NFS_SERVER_ON_LOCAL_MACHINE=yes
 PV_SIZE=1Gi
-PV_COUNT=5
+PV_COUNT=10
 
 # Helm
 HELM_VERSION=v3.5.4
@@ -188,14 +188,11 @@ EOF
     lxc exec ${CONTROL_PLANE_NAME} -- sh -c "kubectl apply -f /tmp/pv.yml"
     rm -vf ${TEMP_PV_FILE}
     
-  echo "${GREEN}Installing Argo CD${RESET}"  
-  lxc exec ${CONTROL_PLANE_NAME} -- sh -c "kubectl create namespace argocd; kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
-
   echo "${GREEN}Installing Argo CD CLI in ${CONTROL_PLANE_NAME}${RESET}"
   lxc exec ${CONTROL_PLANE_NAME} -- sh -c "curl -LO https://github.com/argoproj/argo-cd/releases/download/v2.0.1/argocd-util-linux-amd64 && chmod +x argocd-util-linux-amd64 && mv argocd-util-linux-amd64 /usr/local/bin/argocd"
 
   echo "${YELLOW}Agro CD Username: admin${RESET}"
-  echo "${YELLOW}Agro CD Password: `lxc exec ${CONTROL_PLANE_NAME} -- sh -c "kubectl -n argocd get secret argocd-initial-admin-secret -o json|jq -r .data.password |base64 -d"`${RESET}"
+  echo "${YELLOW}Agro CD Password: `lxc exec ${CONTROL_PLANE_NAME} -- sh -c "kubectl -n argocd-lab get secret argocd-initial-admin-secret -o json|jq -r .data.password |base64 -d"`${RESET}"
   ;;
   destroy)
     echo "${RED}Deleting VMs${RESET}"
@@ -216,7 +213,7 @@ EOF
   ;;
   info)
   echo "Agro CD Default Username: admin"
-  echo "Agro CD Default Password: `lxc exec ${CONTROL_PLANE_NAME} -- sh -c "kubectl -n argocd get secret argocd-initial-admin-secret -o json|jq -r .data.password |base64 -d"`"
+  echo "Agro CD Default Password: `lxc exec ${CONTROL_PLANE_NAME} -- sh -c "kubectl -n argocd-lab get secret argocd-initial-admin-secret -o json|jq -r .data.password |base64 -d"`"
   echo "IP Addresses :"
   lxc list --format=json |jq -r '["VM Name", "IPv4_Address", "IPv6_Address"] ,(.[] | [ .name, .state.network.enp5s0.addresses[].address])|@tsv'
 
