@@ -50,6 +50,7 @@ locals {
         "auth.adminUser"              = "admin"
         "auth.adminPassword"          = "admin_123"
         "service.type"                = "NodePort"
+        "service.nodePorts.https"     = "31443"
       }
     }
   }
