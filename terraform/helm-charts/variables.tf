@@ -35,8 +35,8 @@ locals {
       version    = "1.15.2"
       custom_values = {
         "controller.kind"                    = "DaemonSet"
-        "controller.service.nodePorts.http"  = "31000"
-        "controller.service.nodePorts.https" = "31001"
+        "controller.service.nodePorts.http"  = "32080"
+        "controller.service.nodePorts.https" = "32443"
       }
     },
     keycloak = {
