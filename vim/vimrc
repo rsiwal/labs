@@ -185,3 +185,8 @@ nnoremap <F5> :NERDTreeToggle<CR>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Enable Rainbow Brackets
 let g:rainbow_active = 1
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Enable Highlighting the yanked text for 2 seconds
+let g:highlightedyank_highlight_duration = 2000
+

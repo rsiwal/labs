@@ -16,12 +16,16 @@ vim_fugitive_version="v3.3"
 nerdtree_version="6.10.11"
 vim_devicons_version="v0.11.0"
 nerd_fonts_version="v2.1.0"
+vim_highlightedyank_version="master"
 nodejs_version="v14.17.5"
 terraform_lsp_version="0.0.12"
 terraform_version="1.0.4"
 terragrunt_version="v0.31.4"
-vim_plugins="neoclide/coc.nvim morhetz/gruvbox luochen1990/rainbow vim-airline/vim-airline tpope/vim-commentary tpope/vim-fugitive dense-analysis/ale preservim/nerdtree ryanoasis/vim-devicons"
+vim_plugins="neoclide/coc.nvim morhetz/gruvbox luochen1990/rainbow vim-airline/vim-airline tpope/vim-commentary tpope/vim-fugitive dense-analysis/ale preservim/nerdtree ryanoasis/vim-devicons machakann/vim-highlightedyank"
 this_dir=$(dirname $(realpath $0))
+
+# Create the .local/bin folder where we will store all the binaries
+mkdir -p "${HOME}/.local/bin"
 
 function install_fonts_for_devicons() {
   cd /tmp/
@@ -178,8 +182,8 @@ Ubuntu)
   install_terragrunt
 
   # Finally update vimrc and coc-settings.json
-  cp ${this_dir}/vim/coc-settings.json ${HOME}/.vim/coc-settings.json
-  cp ${this_dir}/vim/vimrc ${HOME}/.vim/
+  cp ${this_dir}/coc-settings.json ${HOME}/.vim/coc-settings.json
+  cp ${this_dir}/vimrc ${HOME}/.vim/
 
   # Setup the patched fonts for devicons
   install_fonts_for_devicons
