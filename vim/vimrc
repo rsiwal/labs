@@ -1,0 +1,187 @@
+" Set internal encoding of vim, not needed on neovim, since coc.nvim using some
+" unicode characters in the file autoload/float.vim
+set encoding=utf-8
+set nocompatible    " We don't need compatibility with vi.
+set tabstop=2       " Width of a <Tab> character.
+                    " If you share a file with with someone, it will depend on
+                    " his tabstop value. It could be different and hence the
+                    " file content might be slightly displaced for spaces.
+set expandtab       " Use the appropriate number of spaces to insert a <Tab>.
+                    " So, Spaces are used instead of <Tab> character. It will be
+                    " displayed same in all editors
+                    " <Backspace> key deletes a single space at a time
+set shiftwidth=2    " If we press <Backspace>, how many "spaces" should be deleted.
+                    " Characters to shift for indent and de-indent
+set softtabstop=2   " If we press a <Tab> character, how many "spaces" should be inserted
+                    " Always keep softtabstop & shiftwidth same
+set number          " Show the Line numbers
+set relativenumber  " Show line numbers relative to current line
+set autoindent      " Copy indent from current line when starting a new line
+                    " (typing <CR> in Insert mode or when using the "o" or "O" command)
+set smartindent     " Do smart autoindenting when starting a new line
+                    " An indent is automatically inserted:
+                    " - After a line ending in '{'.
+                    " - After a line starting with a keyword from 'cinwords'.
+                    " - Before a line starting with '}' (only with the "O" command).
+set hidden          " Buffer becomes hidden  when it is abandoned.
+                    " When OFF , buffer is unloaded
+filetype plugin indent on     " To enable file type detection
+                              " Enable loading the plugin files for specific file types with
+                              " It load "ftplugin.vim" in 'runtimepath'
+                              " Enable loading the indent file for specific file types
+set autoread        " When a file has been detected to have been changed outside of Vim and
+                    " it has not been changed inside of Vim, automatically read it again
+set backspace=indent,eol,start  " Allow backspacing for automatically inserted indentation, line breaks and start of insert
+set laststatus=2    " Always show the statusline
+set ruler           " Show the line and column number of the cursor position in status line
+set syntax=on          " Enable Syntax highlighting
+set hlsearch        " To highlight all searches
+set incsearch       " While typing a search command, show where the pattern, as it was typed so far, matches
+set colorcolumn=80  " Mark column. You should try to avoid using more than 80 columns for cleaner code
+set wildmenu        " When 'wildmenu' is on, command-line completion operates in an enhanced mode
+                    " Pressing 'wildchar' (usually <Tab>) invokes completion just above command line
+set shell=bash
+
+set nobackup        " Backup file is immediately deleted upon successfully writing the original file.
+set nowritebackup   " Delete the backup as soon as write is completed.
+
+set cmdheight=2     " Give more space for displaying messages. Its the space below statusline
+
+set updatetime=2000 " If this many milliseconds nothing is typed the swap file will be written to disk.
+                    " In case of crash, we loose less data
+
+set foldmethod=indent " Folding the code to make it cleaner. works well for many languages, and this is my default choice.
+
+" Don't pass messages to |ins-completion-menu|.
+set shortmess+=c    " shortmess: Display short messages instead of full.
+                    " Display "[Incomplete last line]" instead of "[noeol]"
+
+set complete-=i     " In insert mode, type the first couple of characters of a word, then press:
+                    " Ctrl-N to insert the next matching word or
+                    " Ctrl-P to insert the previous matching word
+                    "-i" Don't scan current and included files
+
+" A comma separated list of options for Insert mode completion
+set completeopt=menuone   " Use the popup menu also when there is only one match.
+set completeopt+=popup    " Show extra information about the currently selected completion in a popup window
+set completeopt+=noselect " Do not select a match in the menu, force the user to select one from menu
+set completeopt+=noinsert " Do not insert any text for a match until the user selects a match from the menu
+
+set signcolumn=yes  " Always show the signcolumn (at left column 1), otherwise it would shift the text each time
+
+let mapleader = ","       " Map the <leader> to , which has better reachability
+
+" list of directories which will be searched when using the
+" gf, [f, ]f, ^Wf, :find, :sfind, :tabfind and other commands
+set path+=**  " Scan for subdirectories under current directory
+
+" Allow undo even after the file is closed
+if !isdirectory($HOME."/.vim")
+    call mkdir($HOME."/.vim", "", 0770)
+endif
+if !isdirectory($HOME."/.vim/undo-dir")
+    call mkdir($HOME."/.vim/undo-dir", "", 0700)
+endif
+set undodir=~/.vim/undo-dir
+set undofile
+
+" Directory browsing with vim. Plugin used in netrw
+" :Explore : To open browser in current window
+" :Sexplore: open netrw (file browser) in horizontal split
+" :Vexplore : Open file browser in vertical split
+let g:netrw_banner = 0        " Remove annoying banner for file explorer
+let g:netrw_liststyle = 3     " Change the view to tree view using | . Change to other views by typing i
+let g:netrw_winsize = 25      " Set the width of the directory explorer to 10%
+let g:netrw_altv = 1          " Open file split using "v" to right intsead of left window
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+ let g:sql_type_default = 'mysql' " MySQL
+ let g:omni_sql_default_compl_type = 'syntax'
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Set filetypes for Some files that I use normally
+autocmd BufNewFile,BufRead *.tf set filetype=terraform
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Vim Plugins & Customizations
+" VIM-Commentary
+autocmd FileType terraform setlocal commentstring=#\ %s
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" GruvBox Color Scheme for better theme
+colorscheme gruvbox
+set background=dark
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ALE : Async Lint Engine
+" Supproting linting, Fixing, GoTo Definiation etc.
+let g:ale_fixers = {
+  \   '*': ['remove_trailing_lines', 'trim_whitespace'],
+  \   'terraform': ['terraform'],
+  \   'sql': ['sqlformat'],
+  \   'c': ['clang-format'],
+  \   'cpp': ['clang-format'],
+  \   'json': ['jq', 'prettier'],
+  \   'sh': ['shfmt'],
+  \   'yaml': ['prettier']
+  \}
+
+let g:ale_fix_on_save = 1 " Fix on saving files
+" We will let Coc Handle the completion
+" let g:ale_completion_enabled = 1
+"
+" Coc Will work as an LSP client
+let g:ale_disable_lsp = 1
+" ALE provides an omni-completion function you can use for triggering completion manually with <C-x><C-o>.
+"
+set omnifunc=ale#completion#OmniFunc
+
+" ALE supports automatic imports from external modules. This behavior is disabled by default and can be enabled by setting:
+let g:ale_completion_autoimport = 1
+
+let g:ale_sign_column_always = 1
+let g:airline#extensions#ale#enabled = 1
+inoremap <leader>, <C-x><C-o>     " Use ,, for completion
+let g:ale_set_balloons = 1
+
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+
+" For gcc , install clangd-12
+" Enable hadolint for docker lint
+let g:ale_dockerfile_hadolint_use_docker = 'yes'
+
+" Overwrite the yamllint variables in ~/.config/yamllint/config
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+" For non-interactive installation of plugins
+" mkdir -p ~/.config/coc/extensions
+" cd ~/.config/coc/extensions
+" if [ ! -f package.json ]
+" then
+"   echo '{"dependencies":{}}'> package.json
+" fi
+" npm install coc-snippets --global-style --ignore-scripts --no-bin-links --no-package-lock --only=prod
+" autocmd VimEnter * CocInstall coc-json coc-docker coc-yaml coc-git coc-sql coc-sh coc-python coc-phpls
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+command! MakeTags !ctags -R .   " Add a command MakeTags to create tags recursively
+" Use ^] to just to the tag
+" Use ^t to come back to the older position where you started with
+" ^o can be also be used to go back to the older cursor position
+" Use g^] for ambigous tags
+"
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" NERDTree
+" Press F5 in normal node to toggle NERDTree
+nnoremap <F5> :NERDTreeToggle<CR>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Enable Rainbow Brackets
+let g:rainbow_active = 1
