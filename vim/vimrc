@@ -181,6 +181,8 @@ command! MakeTags !ctags -R .   " Add a command MakeTags to create tags recursiv
 " NERDTree
 " Press F5 in normal node to toggle NERDTree
 nnoremap <F5> :NERDTreeToggle<CR>
+" Ctrl+G is seen in front of directories
+let g:NERDTreeNodeDelimiter = "\u00a0"
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Enable Rainbow Brackets
@@ -189,4 +191,3 @@ let g:rainbow_active = 1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Enable Highlighting the yanked text for 2 seconds
 let g:highlightedyank_highlight_duration = 2000
-

@@ -39,7 +39,7 @@ function update_path() {
   export PATH=${HOME}/.local/bin:${PATH}
   grep -s '\${HOME}/.local/bin' ${HOME}/.bashrc || echo "PATH=\${HOME}/.local/bin:\${PATH}" >>${HOME}/.bashrc
   export PATH=${HOME}/node_modules/.bin/:${PATH}
-  grep -s '\${HOME}/node_modules/.bin/' ${HOME}/.bashrc || echo "PATH=\${HOME}/node_modules/.bin:\${PATH}" >>${HOME}/.bashrc
+  grep -s '\${HOME}/node_modules/.bin/' ${HOME}/.bashrc || echo "PATH=\${HOME}/node_modules/.bin/:\${PATH}" >>${HOME}/.bashrc
   source ${HOME}/.bashrc
 }
 
