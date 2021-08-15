@@ -191,3 +191,8 @@ let g:rainbow_active = 1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Enable Highlighting the yanked text for 2 seconds
 let g:highlightedyank_highlight_duration = 2000
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Enable Markdown preview auto refresh
+let g:preview_markdown_auto_update=1
+" To open the Markdown preview in Right, use Ex mode to run the commandg:preview_markdown_auto_update=1
+" :PreviewMarkdown right
