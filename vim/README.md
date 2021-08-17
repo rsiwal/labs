@@ -23,15 +23,17 @@ This Dockerfile has been created with some plugins that make life easy for devel
 - Create the image.
   ```
   cd vim/
-  docker build -t devops-vim -f vim.Dockerfile .
+  make build
   ```
 - Run vim from this image
   ```
-  docker run --rm  -v <LocalVolume>:<Mount folder> -it devops-vim <file to be opened>
+  docker run -e COLUMNS=`tput cols` -e LINES=`tput lines` --rm  -v <LocalVolume>:/mnt -it vim-devops <file to be opened should be mounted on docker container>
   ```
 
 ## Setup vim locally (Only Ubuntu Supported as of now)
 
+```
 cd vim/
 ./local_setup.sh
+```
 

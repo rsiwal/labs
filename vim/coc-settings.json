@@ -28,30 +28,22 @@
     }
   },
   "yaml.schemas": {
-    "kubernetes": ["**k8s/*/*.yaml", "**k8s/*/*.yml"],
+    "kubernetes": ["**k8s/*.yml", "**k8s/*.yaml"],
     "https://json.schemastore.org/ansible-playbook.json": [
-      "**ansible/*.yaml",
-      "**ansible/*.yml"
+      "**ansible/*.yml",
+      "**ansible/*.yaml"
     ],
     "https://json.schemastore.org/chart.json": [
-      "**helm/*/*.yaml",
-      "**helm/*/*.yml"
+      "**helm/*/*.yml",
+      "**helm/*/*.yaml"
     ],
     "https://json.schemastore.org/kustomization.json": [
-      "**kustomization/*/*.yaml",
-      "**kustomization/*/*.yml"
-    ],
-    "https://raw.githubusercontent.com/argoproj/argo-workflows/master/api/jsonschema/schema.json": [
-      "**argo/*/*.yaml",
-      "**argo/*/*.yml"
-    ],
-    "https://json.schemastore.org/github-workflow.json": [
-      "**github-workflow/*/*.yaml",
-      "**github-workflow/*/*.yml"
+      "**kustomize/*/*.yml",
+      "**kustomize/*/*.yaml"
     ],
     "https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json": [
-      "**docker-compose.yaml",
-      "**docker-compose.yml"
+      "**docker-compose.yml",
+      "**docker-compose.yaml"
     ]
   }
 }

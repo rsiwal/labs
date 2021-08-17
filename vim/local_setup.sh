@@ -17,11 +17,12 @@ nerdtree_version="6.10.11"
 vim_devicons_version="v0.11.0"
 nerd_fonts_version="v2.1.0"
 vim_highlightedyank_version="master"
+preview_markdown_vim_version="master"
 nodejs_version="v14.17.5"
 terraform_lsp_version="0.0.12"
 terraform_version="1.0.4"
 terragrunt_version="v0.31.4"
-vim_plugins="neoclide/coc.nvim morhetz/gruvbox luochen1990/rainbow vim-airline/vim-airline tpope/vim-commentary tpope/vim-fugitive dense-analysis/ale preservim/nerdtree ryanoasis/vim-devicons machakann/vim-highlightedyank"
+vim_plugins="neoclide/coc.nvim morhetz/gruvbox luochen1990/rainbow vim-airline/vim-airline tpope/vim-commentary tpope/vim-fugitive dense-analysis/ale preservim/nerdtree ryanoasis/vim-devicons machakann/vim-highlightedyank skanehira/preview-markdown.vim"
 this_dir=$(dirname $(realpath $0))
 
 # Create the .local/bin folder where we will store all the binaries
@@ -189,6 +190,10 @@ Ubuntu)
   install_fonts_for_devicons
   echo "Please Update your terminal (Konsole or gnome-terminal to use Hack NERD fonts to have a better stusline with icons)"
   echo "For Konsole : Settings => Edit Current Profile => Appearance => Font => Choose (Hack NERD Font)"
+
+  # Install Markdown renderer
+  curl -L https://github.com/MichaelMure/mdr/releases/download/${mdr_version}/mdr_linux_amd64 -o ${HOME}/.local/bin/mdr
+  chmod +x ${HOME}/.local/bin/mdr
 
   ;;
 *)

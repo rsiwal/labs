@@ -1,0 +1,4 @@
+DOCKER_REPO="rsiwal"
+VERSION="0.1"
+# Folder to be mounted at /mnt in vim-devops container
+HOME_DIR=~/
