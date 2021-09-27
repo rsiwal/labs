@@ -20,6 +20,7 @@ vim_highlightedyank_version="master"
 preview_markdown_vim_version="master"
 nodejs_version="v14.17.5"
 terraform_lsp_version="0.0.12"
+terraform_ls_version="0.22.0"
 terraform_version="1.0.4"
 terragrunt_version="v0.31.4"
 vim_plugins="neoclide/coc.nvim morhetz/gruvbox luochen1990/rainbow vim-airline/vim-airline tpope/vim-commentary tpope/vim-fugitive dense-analysis/ale preservim/nerdtree ryanoasis/vim-devicons machakann/vim-highlightedyank skanehira/preview-markdown.vim"
@@ -50,6 +51,16 @@ function install_terraform_lsp() {
   tar zxvf terraform-lsp_${terraform_lsp_version}_linux_amd64.tar.gz
   mv terraform-lsp ${HOME}/.local/bin/
   chmod +x ${HOME}/.local/bin/terraform-lsp
+}
+
+function install_terraform_ls() {
+  # Add the HashiCorp GPG key
+  curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+  # Add the official HashiCorp Linux repository
+  sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+  sudo apt-get update
+  echo "Installing terraform-ls LSP:"
+  sudo apt-get install terraform-ls=${terraform_ls_version}
 }
 
 function install_terraform() {
@@ -179,6 +190,7 @@ Ubuntu)
 
   # Install terraform-lsp
   install_terraform_lsp
+  install_terraform_ls
   install_terraform
   install_terragrunt
 

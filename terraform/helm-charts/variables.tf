@@ -3,54 +3,46 @@ locals {
     vault = {
       repository = "https://helm.releases.hashicorp.com/"
       name       = "hashicorp-vault"
-      namespace  = "hashicorp-vault-lab"
+      namespace  = "hashicorp-vault"
       chart      = "vault"
-      version    = "0.12.0"
+      version    = "0.16.0"
       custom_values = {
-        "server.dev.enabled"          = false
-        "server.ha.enabled"           = false
-        "server.auditStorage.enabled" = true
-        "server.auditStorage.size"    = "500Mi"
+        "server.dev.enabled"          = false,
+        "server.ha.enabled"           = false,
+        "server.auditStorage.enabled" = true,
+        "server.auditStorage.size"    = "500Mi",
         "server.dataStorage.size"     = "500Mi"
-        "server.service.type"         = "NodePort"
-        "server.service.nodePort"     = "30082"
       }
     },
-    argocd = {
+    jenkins = {
+      repository = "https://charts.jenkins.io"
+      name       = "jenkins"
+      namespace  = "jenkins"
+      chart      = "jenkins"
+      version    = "3.5.18"
+      custom_values = {
+      }
+    },
+    argo-cd = {
       repository = "https://argoproj.github.io/argo-helm"
-      name       = "argocd"
-      namespace  = "argocd-lab"
+      name       = "argo-cd"
+      namespace  = "argo-cd"
       chart      = "argo-cd"
-      version    = "3.6.4"
+      version    = "3.21.0"
       custom_values = {
         "server.service.type"          = "NodePort"
         "server.service.nodePortHttps" = "30443"
       }
     },
-    haproxy-ingress = {
-      repository = "https://haproxytech.github.io/helm-charts"
-      name       = "kubernetes-ingress"
-      namespace  = "kubernetes-ingress-lab"
-      chart      = "kubernetes-ingress"
-      version    = "1.15.2"
+    sealed-secrets = {
+      repository = "https://bitnami-labs.github.io/sealed-secrets"
+      name       = "sealed-secrets"
+      namespace  = "sealed-secrets"
+      chart      = "sealed-secrets"
+      version    = "1.16.1"
       custom_values = {
-        "controller.kind"                    = "DaemonSet"
-        "controller.service.nodePorts.http"  = "32080"
-        "controller.service.nodePorts.https" = "32443"
-      }
-    },
-    keycloak = {
-      repository = "https://charts.bitnami.com/bitnami"
-      name       = "keycloak"
-      namespace  = "keycloak-lab"
-      chart      = "keycloak"
-      version    = "3.0.4"
-      custom_values = {
-        "postgresql.persistence.size" = "500Mi"
-        "auth.adminUser"              = "admin"
-        "auth.adminPassword"          = "admin_123"
-        "service.type"                = "NodePort"
-        "service.nodePorts.https"     = "31443"
+        "ingress.enabled"  = "true"
+        "ingress.hosts[0]" = "sealed-secrets.example.com"
       }
     }
   }

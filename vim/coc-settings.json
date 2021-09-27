@@ -4,7 +4,7 @@
   "coc.preferences.formatOnSaveFiletypes": ["yaml", "json", "markdown"],
   "languageserver": {
     "terraform": {
-      "command": "terraform-lsp",
+      "command": "terraform-ls",
       "args": ["serve"],
       "filetypes": ["terraform", "tf"],
       "initializationOptions": {},

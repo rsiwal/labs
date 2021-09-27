@@ -1,0 +1,66 @@
+---
+# Ingress for Jenkins
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-jenkins
+  namespace: jenkins
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+    - host: "jenkins.example.com"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: jenkins
+                port:
+                  number: 8080
+
+---
+# Ingress for Vault
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vault-ingress
+  namespace: hashicorp-vault-lab
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+    - host: "vault.example.com"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: vault-internal
+                port:
+                  number: 8200
+
+---
+# Ingress for Argo
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: Argo-ingress
+  namespace: argo
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+    - host: "argo.example.com"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: argo-ui
+                port:
+                  number: 80
+
