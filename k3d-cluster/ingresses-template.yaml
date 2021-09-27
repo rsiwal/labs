@@ -1,0 +1,45 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ${service}-ingress
+  namespace: ${namespace}
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+    - host: "${service}.example.com"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ${service_name}
+                port:
+                  number: ${service_port}
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ${service}-tls-ingress
+  namespace: ${namespace}
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  tls:
+    - hosts:
+        - "${service}.example.com"
+      secretName: example-com-tls
+  rules:
+    - host: "${service}.example.com"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ${service_name}
+                port:
+                  number: ${service_port}
+

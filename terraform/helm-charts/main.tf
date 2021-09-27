@@ -1,12 +1,13 @@
-resource "helm_release" "releases" {
+resource "helm_release" "helm_release" {
   for_each = local.charts
 
-  repository       = each.value["repository"]
-  name             = each.value["name"]
-  chart            = each.value["chart"]
-  version          = each.value["version"]
-  namespace        = each.value["namespace"]
-  create_namespace = true
+  version           = each.value["version"]
+  repository        = each.value["repository"]
+  create_namespace  = true
+  name              = each.value["name"]
+  chart             = each.value["chart"]
+  dependency_update = true
+  namespace         = each.value["namespace"]
 
   dynamic "set" {
     for_each = each.value["custom_values"]
