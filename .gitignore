@@ -1,1 +1,2 @@
 **/.terraform
+.gitsecret/keys/random_seed

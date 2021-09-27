@@ -207,6 +207,11 @@ Ubuntu)
   curl -L https://github.com/MichaelMure/mdr/releases/download/${mdr_version}/mdr_linux_amd64 -o ${HOME}/.local/bin/mdr
   chmod +x ${HOME}/.local/bin/mdr
 
+  # git-secret : Encrypts the private data using gpg. You can now store that in git
+  sudo apt install git-secret
+
+  # git-secrets : Prevents you from committing password and other sensitive info to git
+  sudo apt install git-secrets
   ;;
 *)
   echo "OS NOT supported for installing "
