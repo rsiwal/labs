@@ -1,2 +1,6 @@
 **/.terraform
+terraform/vault/secrets.tf
+ca/*
+terraform/vault/terraform.tfstate
+terraform/vault/terraform.tfstate.backup
 .gitsecret/keys/random_seed

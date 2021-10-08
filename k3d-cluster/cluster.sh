@@ -35,7 +35,7 @@ no_of_master_nodes=1
 no_of_worker_nodes=1
 cluster_subnet="10.255.0.0/16"
 
-service_names="argo-cd jenkins devtron vault sealed-secrets"
+service_names="argo-cd jenkins devtron vault sealed-secrets blackbox-exporter"
 service_domain="example.com"
 
 action=$1
@@ -226,6 +226,11 @@ case $action in
       namespace=${service}
       service_port=80
       case $service in
+        blackbox-exporter)
+          namespace="prometheus-blackbox-exporter"
+          service_name="prometheus-blackbox-exporter"
+          service_port="9115"
+          ;;
         jenkins)
           export service_port="8080"
           ;;
